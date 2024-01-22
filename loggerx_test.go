@@ -12,8 +12,12 @@ import (
 
 func TestLogger(t *testing.T) {
 
-	l := loggerx.InitLogger("profix")
+	l := loggerx.NewLogger(loggerx.SetErrorToInfo())
 
 	l.Error(context.Background(), "test error")
+
+	l.Channel("test").Error(context.Background(), "test error")
+
+	l.Info(context.Background(), "test info")
 
 }
