@@ -28,7 +28,7 @@ func (l *Logger) delete() {
 			}
 		}
 		ext := filepath.Ext(path)
-		if ext == ".log" {
+		if ext != ".log" {
 			return nil
 		}
 		// 删除文件
