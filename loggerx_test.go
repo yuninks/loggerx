@@ -3,6 +3,7 @@ package loggerx_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"code.yun.ink/pkg/loggerx"
 )
@@ -20,4 +21,5 @@ func TestLogger(t *testing.T) {
 
 	l.Info(context.Background(), "test info")
 
+	time.Sleep(time.Second * 2)
 }

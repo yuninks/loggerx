@@ -7,7 +7,8 @@ type loggerOption struct {
 	isGinLog    bool
 	isGid       bool
 	traceField  string // trace字段
-	errorToInfo bool   //
+	errorToInfo bool   // 错误日志是否写入info日志
+	days        int    // 日志保存天数
 }
 
 func defaultOptions() loggerOption {
@@ -15,6 +16,7 @@ func defaultOptions() loggerOption {
 		format:     "json",
 		dir:        "./log",
 		traceField: "trace_id",
+		days:       7,
 	}
 }
 
@@ -66,6 +68,13 @@ func SetDir(dir string) Option {
 func SetGID() Option {
 	return func(o *loggerOption) {
 		o.isGid = true
+	}
+}
+
+// 日志保存天数
+func SetDays(days int) Option {
+	return func(o *loggerOption) {
+		o.days = days
 	}
 }
 

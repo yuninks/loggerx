@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// 日志文件的计算
+// 文件操作
 
 // 获取最新的文件名
 func (l *Logger) nowFileName(event string) string {

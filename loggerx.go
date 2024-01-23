@@ -52,6 +52,10 @@ func NewLogger(opts ...Option) *Logger {
 		gin.DefaultWriter = io.MultiWriter(l, os.Stdout)
 		gin.DefaultErrorWriter = io.MultiWriter(l, os.Stdout)
 	}
+
+	// 日志删除
+	go l.delete()
+
 	return l
 }
 
