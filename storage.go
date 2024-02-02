@@ -10,16 +10,6 @@ func (l *Logger) write(event string, b []byte) (n int, err error) {
 		return 0, err
 	}
 
-	// fmt.Println("write", string(b))
-	// defer func() {
-	// 	fmt.Println(n, err)
-	// }()
-
-	// 添加换行
-	a := []byte("\n[" + event + "]")
-
-	b = append(a, b...)
-
 	n, err = f.Write(b)
 	if err == nil && n < len(b) {
 		err = io.ErrShortWrite

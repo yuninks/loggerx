@@ -42,6 +42,10 @@ func (l *Logger) logger(ctx context.Context, event string, v ...any) {
 	}
 	fdb, _ := json.Marshal(fd)
 
+	ff := []byte("\n[" + event + "]")
+	fdb = append(ff, fdb...)
+	
+
 	l.write(event, fdb)
 
 	if l.option.errorToInfo && event == "error" {
