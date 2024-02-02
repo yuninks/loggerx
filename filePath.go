@@ -17,13 +17,13 @@ func (l *Logger) nowFileName(event string) string {
 	if l.channel != "" {
 		timeDir = l.channel + "/" + timeDir
 	}
-	path := l.option.dir + "/" + timeDir + "_"+event + ".log"
+	path := l.option.dir + "/" + timeDir + "_" + event + ".log"
 	// fmt.Println(filepath.Abs(path))
 	return path
 }
 
 // 新建文件
-func (l *Logger) getFile(event string,isRefresh bool) (*os.File, error) {
+func (l *Logger) getFile(event string, isRefresh bool) (*os.File, error) {
 	f := l.loadFile(event)
 	if f != nil && !isRefresh {
 		return f, nil
@@ -38,7 +38,7 @@ func (l *Logger) getFile(event string,isRefresh bool) (*os.File, error) {
 	os.MkdirAll(dir, os.ModePerm)      // 创建多层目录，如果存在不会报错
 
 	// 打开该文件，如果不存在则创建
-	file, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	file, err := os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		// 打开失败，尝试创建
 		fmt.Println("打开日志文件失败")

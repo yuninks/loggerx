@@ -17,9 +17,9 @@ func TestLogger(t *testing.T) {
 
 	l.Error(context.Background(), "test error")
 
-	l.Channel("test").Error(context.Background(), "test error")
+	l.Channel("channel").Error(context.Background(), "test error")
 
 	l.Info(context.Background(), "test info")
 
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 5)
 }

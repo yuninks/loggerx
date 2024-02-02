@@ -30,13 +30,32 @@ func (l *Logger) logger(ctx context.Context, event string, v ...any) {
 
 	traceId, _ := ctx.Value(l.option.traceField).(string)
 
-	writeStr := "[" + event + "]" + nowTime + " " + file + ":" + fmt.Sprintf("%d", line) + " " + funcName + " gid:" + getGID() + " " + traceId + " @data@: " + string(by) + "\n\n"
+	// writeStr := "[" + event + "]" + nowTime + " " + file + ":" + fmt.Sprintf("%d", line) + " " + funcName + " gid:" + getGID() + " " + traceId + " @data@: " + string(by) + "\n\n"
 
-	l.write(event, []byte(writeStr))
+	fd := FormatData{
+		Time:    nowTime,
+		File:    file + ":" + fmt.Sprintf("%d", line),
+		Func:    funcName,
+		Gid:     getGID(),
+		Content: string(by),
+		TraceId: traceId,
+	}
+	fdb, _ := json.Marshal(fd)
+
+	l.write(event, fdb)
 
 	if l.option.errorToInfo && event == "error" {
-		l.write("info", []byte(writeStr))
+		l.write("info", fdb)
 	}
 
 	// log.Println("" + string(by))
+}
+
+type FormatData struct {
+	Time    string `json:"time,omitempty"`
+	File    string `json:"file,omitempty"`
+	Func    string `json:"func,omitempty"`
+	Gid     string `json:"gid,omitempty"`
+	Content string `json:"content,omitempty"`
+	TraceId string `json:"traceId,omitempty"`
 }
