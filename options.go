@@ -60,7 +60,9 @@ func SetGinLog() Option {
 // 文件路径
 func SetDir(dir string) Option {
 	return func(o *loggerOption) {
-		o.dir = dir
+		if dir != "" {
+			o.dir = dir
+		}
 	}
 }
 
