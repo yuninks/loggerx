@@ -17,7 +17,8 @@ func TestLogger(t *testing.T) {
 
 	l.Error(context.Background(), "test error")
 
-	l.Channel("channel").Error(context.Background(), "test error")
+	l.Channel("channel1").Error(context.Background(), "channel1 test error")
+	l.Channel("channel2").Error(context.Background(), "channel2 test error")
 
 	l.Info(context.Background(), "test info")
 

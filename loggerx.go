@@ -1,7 +1,7 @@
 package loggerx
 
 // author：黄新云
-// lastTime:2023年6月30日21:28:04
+// lastTime:2024年4月3日21:18:05
 // desc: 日志封装类
 
 import (
@@ -36,6 +36,11 @@ func NewLogger(opts ...Option) *Logger {
 	opt := defaultOptions()
 	for _, apply := range opts {
 		apply(&opt)
+	}
+
+	// 验证文件夹权限
+	if !checkDir(opt.dir) {
+		panic("文件夹权限不足")
 	}
 
 	l := &Logger{
@@ -111,4 +116,18 @@ func getGID() string {
 	b = bytes.TrimPrefix(b, []byte("goroutine "))
 	b = b[:bytes.IndexByte(b, ' ')]
 	return string(b)
+}
+
+// 验证文件夹权限
+// 根文件夹如果不存在则创建
+func checkDir(dir string) bool {
+	if _, err := os.Stat(dir); err != nil {
+		if os.IsNotExist(err) {
+			if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+				log.Println("创建文件夹失败", err)
+				return false
+			}
+		}
+	}
+	return true
 }
