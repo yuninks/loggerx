@@ -16,6 +16,8 @@ type loggerOption struct {
 
 func defaultOptions() loggerOption {
 	return loggerOption{
+		isGinLog:   true,
+		isGid:      true,
 		format:     "json",
 		dir:        "./log",
 		traceField: "trace_id",
@@ -54,9 +56,9 @@ func SetFormat(format string) Option {
 }
 
 // 是否保存gin的日志
-func SetGinLog() Option {
+func SetGinLog(open bool) Option {
 	return func(o *loggerOption) {
-		o.isGinLog = true
+		o.isGinLog = open
 	}
 }
 
@@ -70,9 +72,9 @@ func SetDir(dir string) Option {
 }
 
 // 保存goroutine的ID信息
-func SetGID() Option {
+func SetGID(open bool) Option {
 	return func(o *loggerOption) {
-		o.isGid = true
+		o.isGid = open
 	}
 }
 

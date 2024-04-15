@@ -32,7 +32,7 @@ type filePath struct {
 	fileName string
 }
 
-func NewLogger(opts ...Option) *Logger {
+func NewLogger(ctx context.Context, opts ...Option) *Logger {
 	opt := defaultOptions()
 	for _, apply := range opts {
 		apply(&opt)
@@ -60,6 +60,12 @@ func NewLogger(opts ...Option) *Logger {
 
 	// 日志删除
 	go l.delete()
+
+	// 强制刷盘
+	go func() {
+		<-ctx.Done()
+		l.MustSync()
+	}()
 
 	return l
 }

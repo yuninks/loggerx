@@ -18,6 +18,7 @@ func TestLogger(t *testing.T) {
 	b := bytes.NewBuffer(nil)
 
 	l := loggerx.NewLogger(
+		context.Background(),
 		loggerx.SetErrorToInfo(),
 		loggerx.SetExtraDriver(b, Print{}),
 	)
@@ -38,6 +39,6 @@ type Print struct {
 }
 
 func (pp Print) Write(p []byte) (n int, err error) {
-	fmt.Print("ppppppppppppppp",string(p))
+	fmt.Print("ppppppppppppppp", string(p))
 	return
 }
