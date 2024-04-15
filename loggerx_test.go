@@ -1,7 +1,9 @@
 package loggerx_test
 
 import (
+	"bytes"
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -13,7 +15,12 @@ import (
 
 func TestLogger(t *testing.T) {
 
-	l := loggerx.NewLogger(loggerx.SetErrorToInfo())
+	b := bytes.NewBuffer(nil)
+
+	l := loggerx.NewLogger(
+		loggerx.SetErrorToInfo(),
+		loggerx.SetExtraDriver(b, Print{}),
+	)
 
 	l.Error(context.Background(), "test error")
 
@@ -22,5 +29,15 @@ func TestLogger(t *testing.T) {
 
 	l.Info(context.Background(), "test info")
 
+	fmt.Println(b.String())
+
 	time.Sleep(time.Second * 5)
+}
+
+type Print struct {
+}
+
+func (pp Print) Write(p []byte) (n int, err error) {
+	fmt.Print("ppppppppppppppp",string(p))
+	return
 }

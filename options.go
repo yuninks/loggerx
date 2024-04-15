@@ -1,14 +1,17 @@
 package loggerx
 
+import "io"
+
 type loggerOption struct {
 	prefix      string // 日志前缀
 	format      string // text json
 	dir         string // 文件目录
 	isGinLog    bool
 	isGid       bool
-	traceField  string // trace字段
-	errorToInfo bool   // 错误日志是否写入info日志
-	days        int    // 日志保存天数
+	traceField  string      // trace字段
+	errorToInfo bool        // 错误日志是否写入info日志
+	days        int         // 日志保存天数
+	drivers     []io.Writer // 文件落盘驱动器
 }
 
 func defaultOptions() loggerOption {
@@ -77,6 +80,20 @@ func SetGID() Option {
 func SetDays(days int) Option {
 	return func(o *loggerOption) {
 		o.days = days
+	}
+}
+
+// 设置时区
+func SetTimeZone() Option {
+	return func(o *loggerOption) {
+		// o.timeZone = timeZone
+	}
+}
+
+// 文件额外的驱动
+func SetExtraDriver(ds ...io.Writer) Option {
+	return func(o *loggerOption) {
+		o.drivers = ds
 	}
 }
 

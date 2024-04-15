@@ -18,5 +18,6 @@ func (l *Logger) write(event string, b []byte) (n int, err error) {
 		// 强制更新
 		l.getFile(event, true)
 	}
-	return f.Write(b)
+	d := append(l.option.drivers, f)
+	return io.MultiWriter(d...).Write(b)
 }
