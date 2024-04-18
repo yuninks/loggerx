@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"code.yun.ink/pkg/loggerx"
+	"github.com/yuninks/loggerx"
 )
 
 // func TestMain(m *testing.M) {

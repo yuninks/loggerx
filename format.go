@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"runtime"
+	"runtime/debug"
 	"strings"
 	"time"
 )
@@ -40,11 +41,15 @@ func (l *Logger) logger(ctx context.Context, event string, v ...any) {
 		Content: string(by),
 		TraceId: traceId,
 	}
+
+	if event == "error" {
+		fd.Stack = string(debug.Stack())
+	}
+
 	fdb, _ := json.Marshal(fd)
 
 	ff := []byte("\n[" + event + "]")
 	fdb = append(ff, fdb...)
-	
 
 	l.write(event, fdb)
 
@@ -62,4 +67,5 @@ type FormatData struct {
 	Gid     string `json:"gid,omitempty"`
 	Content string `json:"content,omitempty"`
 	TraceId string `json:"traceId,omitempty"`
+	Stack   string `json:"stack,omitempty"`
 }
