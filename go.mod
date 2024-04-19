@@ -2,7 +2,10 @@ module github.com/yuninks/loggerx
 
 go 1.20
 
-require github.com/gin-gonic/gin v1.9.1
+require (
+	github.com/gin-gonic/gin v1.9.1
+	github.com/satori/go.uuid v1.2.0
+)
 
 require (
 	github.com/bytedance/sonic v1.9.1 // indirect
