@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"path/filepath"
 	"runtime"
-	"runtime/debug"
 	"strings"
 	"time"
 )
@@ -43,7 +42,7 @@ func (l *Logger) logger(ctx context.Context, event string, v ...any) {
 	}
 
 	if event == "error" {
-		fd.Stack = string(debug.Stack())
+		// fd.Stack = string(debug.Stack())
 	}
 
 	fdb, _ := json.Marshal(fd)
