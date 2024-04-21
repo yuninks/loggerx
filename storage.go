@@ -15,9 +15,15 @@ func (l *Logger) write(event string, b []byte) (n int, err error) {
 		err = io.ErrShortWrite
 	}
 	if err != nil {
-		// 强制更新
-		l.getFile(event, true)
+		// 强制更新 & 再次写入
+		f, err := l.getFile(event, true)
+		if err == nil {
+			f.Write(b)
+		}
 	}
-	d := append(l.option.drivers, f)
-	return io.MultiWriter(d...).Write(b)
+
+	if len(l.option.drivers) > 0 {
+		io.MultiWriter(l.option.drivers...).Write(b)
+	}
+	return n, err
 }

@@ -95,7 +95,11 @@ func SetTimeZone() Option {
 // 文件额外的驱动
 func SetExtraDriver(ds ...io.Writer) Option {
 	return func(o *loggerOption) {
-		o.drivers = ds
+		for _, d := range ds {
+			if d != nil {
+				o.drivers = append(o.drivers, d)
+			}
+		}
 	}
 }
 
