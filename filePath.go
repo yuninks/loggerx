@@ -13,11 +13,36 @@ import (
 func (l *Logger) nowFileName(event string) string {
 	// ioc, _ := time.LoadLocation("Asia/Shanghai")
 	// timeDir := fmt.Sprint(time.Now().In(ioc).Format("2006/01/02/15")) // 2006-01-02 15:04:05
-	timeDir := fmt.Sprint(time.Now().Local().Format("2006/01/02")) // 2006-01-02 15:04:05
-	if l.channel != "" {
-		timeDir = l.channel + "/" + timeDir
+
+	prefix := ""
+
+	switch l.option.fileSplit {
+	case FileSplitTimeA:
+		// （年/月/日/时）
+		prefix = fmt.Sprint(time.Now().Local().Format("2006/01/02/15")) // 2006-01-02 15:04:05
+	case FileSplitTimeB:
+		// （年/月/日）
+		prefix = fmt.Sprint(time.Now().Local().Format("2006/01/02")) // 2006-01-02 15:04:05
+	case FileSplitTimeC:
+		// （年/月-日）
+		prefix = fmt.Sprint(time.Now().Local().Format("2006/01-02")) // 2006-01-02 15:04:05
+	case FileSplitTimeD:
+		// （年-月-日-时）
+		prefix = fmt.Sprint(time.Now().Local().Format("2006-01-02-15")) // 2006-01-02 15:04:05
+	case FileSplitTimeE:
+		// （年-月-日）
+		prefix = fmt.Sprint(time.Now().Local().Format("2006-01-02")) // 2006-01-02 15:04:05
 	}
-	path := l.option.dir + "/" + timeDir + "_" + event + ".log"
+
+	if prefix != "" {
+		prefix = prefix + "_"
+	}
+
+	// timeDir := fmt.Sprint(time.Now().Local().Format("2006/01/02")) // 2006-01-02 15:04:05
+	if l.channel != "" {
+		prefix = l.channel + "/" + prefix
+	}
+	path := l.option.dir + "/" + prefix + event + ".log"
 	// fmt.Println(filepath.Abs(path))
 	return path
 }

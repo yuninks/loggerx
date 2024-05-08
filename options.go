@@ -12,6 +12,8 @@ type loggerOption struct {
 	errorToInfo bool        // 错误日志是否写入info日志
 	days        int         // 日志保存天数
 	drivers     []io.Writer // 文件落盘驱动器
+	fileSplit   FileSplit   // 文件切割规则
+	sizeSplit   int         // 根据文件大小切割
 }
 
 func defaultOptions() loggerOption {
@@ -22,6 +24,7 @@ func defaultOptions() loggerOption {
 		dir:        "./log",
 		traceField: "trace_id",
 		days:       7,
+		fileSplit:  FileSplitTimeE,
 	}
 }
 
@@ -109,6 +112,27 @@ func SetExtraDriver(ds ...io.Writer) Option {
 // 3.时间B（年/月-日）
 // 4.时间C（年-月-日-时）
 // 5.时间D（年-月-日）
-// func SetFileSplit()
+func SetFileSplit(split FileSplit) Option {
+	return func(o *loggerOption) {
+		o.fileSplit = split
+	}
+}
 
-//
+type FileSplit string
+
+const (
+	FileSplitNone  FileSplit = "none"  // 不切割
+	FileSplitTimeA FileSplit = "timeA" // （年/月/日/时）
+	FileSplitTimeB FileSplit = "timeB" // （年/月/日）
+	FileSplitTimeC FileSplit = "timeC" // （年/月-日）
+	FileSplitTimeD FileSplit = "timeD" // （年-月-日-时）
+	FileSplitTimeE FileSplit = "timeE" // （年-月-日）
+
+)
+
+// 根据文件大小切割(暂时未生效)
+func SetSizeSplit(m int) Option {
+	return func(o *loggerOption) {
+		o.sizeSplit = m
+	}
+}

@@ -21,6 +21,7 @@ func TestLogger(t *testing.T) {
 		context.Background(),
 		loggerx.SetErrorToInfo(),
 		loggerx.SetExtraDriver(b, Print{}),
+		loggerx.SetFileSplit(loggerx.FileSplitTimeA),
 	)
 
 	l.Error(context.Background(), "test error")
