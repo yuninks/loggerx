@@ -1,6 +1,9 @@
 package loggerx
 
-import "context"
+import (
+	"context"
+	"fmt"
+)
 
 var loggerc *Logger
 
@@ -21,17 +24,19 @@ func Channel(ch string) (r *Logger) {
 }
 
 func Info(ctx context.Context, v ...any) {
-	loggerc.Info(ctx, v...)
+	loggerc.logger(ctx, "info", v...)
 }
 
 func Infof(ctx context.Context, format string, v ...any) {
-	loggerc.Infof(ctx, format, v...)
+	s := fmt.Sprintf(format, v...)
+	loggerc.logger(ctx, "info", s)
 }
 
 func Error(ctx context.Context, v ...any) {
-	loggerc.Error(ctx, v...)
+	loggerc.logger(ctx, "error", v...)
 }
 
 func Errorf(ctx context.Context, format string, v ...any) {
-	loggerc.Errorf(ctx, format, v...)
+	s := fmt.Sprintf(format, v...)
+	loggerc.logger(ctx, "error", s)
 }

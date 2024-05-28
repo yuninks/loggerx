@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+// 监听dir文件夹的所有文件，循环查找是否有超过days天的文件，删除掉
+
 func (l *Logger) delete() {
 	err := filepath.Walk(l.option.dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -39,6 +41,10 @@ func (l *Logger) delete() {
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	// 监听文件夹，获取新加入的文件
+	
+
 }
 
 func isEmptyDir(path string) bool {
