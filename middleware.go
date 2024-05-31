@@ -13,8 +13,8 @@ import (
 // 可以被引入的中间件
 
 // 自动设置请求ID
-func SetTradeId(ctx context.Context) context.Context {
-	return context.WithValue(ctx, "trade_id", uuid.NewV4().String())
+func SetTraceId(ctx context.Context) context.Context {
+	return context.WithValue(ctx, "trace_id", uuid.NewV4().String())
 }
 
 // 中间件 gin框架保存请求相关信息
