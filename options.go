@@ -1,6 +1,10 @@
 package loggerx
 
-import "io"
+import (
+	"io"
+	"os"
+	"time"
+)
 
 type loggerOption struct {
 	prefix      string // 日志前缀
@@ -8,12 +12,13 @@ type loggerOption struct {
 	dir         string // 文件目录
 	isGinLog    bool
 	isGid       bool
-	traceField  string      // trace字段
-	errorToInfo bool        // 错误日志是否写入info日志
-	days        int         // 日志保存天数
-	drivers     []io.Writer // 文件落盘驱动器
-	fileSplit   FileSplit   // 文件切割规则
-	sizeSplit   int         // 根据文件大小切割
+	traceField  string         // trace字段
+	errorToInfo bool           // 错误日志是否写入info日志
+	days        int            // 日志保存天数
+	drivers     []io.Writer    // 文件落盘驱动器
+	fileSplit   FileSplit      // 文件切割规则
+	sizeSplit   int            // 根据文件大小切割
+	timeZone    *time.Location // 时区
 }
 
 func defaultOptions() loggerOption {
@@ -25,6 +30,7 @@ func defaultOptions() loggerOption {
 		traceField: "trace_id",
 		days:       7,
 		fileSplit:  FileSplitTimeE,
+		timeZone:   time.Local,
 	}
 }
 
@@ -34,6 +40,13 @@ type Option func(*loggerOption)
 func SetTraceField(traceField string) Option {
 	return func(o *loggerOption) {
 		o.traceField = traceField
+	}
+}
+
+// 打印到控制台
+func SetToConsole() Option {
+	return func(o *loggerOption) {
+		o.drivers = append(o.drivers, os.Stdout)
 	}
 }
 
@@ -89,9 +102,9 @@ func SetDays(days int) Option {
 }
 
 // 设置时区
-func SetTimeZone() Option {
+func SetTimeZone(loc *time.Location) Option {
 	return func(o *loggerOption) {
-		// o.timeZone = timeZone
+		o.timeZone = loc
 	}
 }
 

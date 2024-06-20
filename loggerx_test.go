@@ -20,7 +20,9 @@ func TestLogger(t *testing.T) {
 	l := loggerx.NewLogger(
 		context.Background(),
 		loggerx.SetErrorToInfo(),
-		loggerx.SetExtraDriver(b, Print{}),
+		loggerx.SetToConsole(),
+		loggerx.SetTimeZone(time.UTC),
+		// loggerx.SetExtraDriver(b, Print{}),
 		loggerx.SetFileSplit(loggerx.FileSplitTimeA),
 	)
 

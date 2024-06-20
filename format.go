@@ -26,7 +26,7 @@ func (l *Logger) logger(ctx context.Context, event string, v ...any) {
 
 	by, _ := json.Marshal(v)
 
-	nowTime := time.Now().Local().Format("2006-01-02 15:04:05.000000")
+	nowTime := time.Now().In(l.option.timeZone).Format("2006-01-02 15:04:05.000000")
 
 	traceId, _ := ctx.Value(l.option.traceField).(string)
 
