@@ -32,8 +32,9 @@ func (l *Logger) walkAndDel() error {
 			fmt.Println(err)
 			return err
 		}
+		// 没设置删除天数
 		if l.option.days <= 0 {
-			l.option.days = 1
+			return nil
 		}
 
 		// 判断最后修改时间是否大于3天
