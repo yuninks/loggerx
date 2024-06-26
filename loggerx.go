@@ -21,6 +21,7 @@ import (
 
 // 需要实现io.Writer接口
 type Logger struct {
+	ctx      context.Context
 	filePath *sync.Map // filePath
 	mu       *sync.Mutex
 	option   loggerOption
@@ -44,6 +45,7 @@ func NewLogger(ctx context.Context, opts ...Option) *Logger {
 	}
 
 	l := &Logger{
+		ctx:      ctx,
 		filePath: &sync.Map{},
 		mu:       &sync.Mutex{},
 		option:   opt,

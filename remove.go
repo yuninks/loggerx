@@ -10,6 +10,23 @@ import (
 // 监听dir文件夹的所有文件，循环查找是否有超过days天的文件，删除掉
 
 func (l *Logger) delete() {
+
+	tick := time.NewTicker(time.Hour)
+
+	for {
+		select {
+		case <-tick.C:
+			err := l.walkAndDel()
+			if err != nil {
+				fmt.Println(err)
+			}
+		case <-l.ctx.Done():
+			return
+		}
+	}
+}
+
+func (l *Logger) walkAndDel() error {
 	err := filepath.Walk(l.option.dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			fmt.Println(err)
@@ -38,15 +55,10 @@ func (l *Logger) delete() {
 		return os.Remove(path)
 	})
 
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// 监听文件夹，获取新加入的文件
-	
-
+	return err
 }
 
+// 判断空文件夹
 func isEmptyDir(path string) bool {
 	files, err := os.ReadDir(path)
 	if err != nil {
