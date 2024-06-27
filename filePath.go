@@ -19,19 +19,19 @@ func (l *Logger) nowFileName(event string) string {
 	switch l.option.fileSplit {
 	case FileSplitTimeA:
 		// （年/月/日/时）
-		prefix = fmt.Sprint(time.Now().Local().Format("2006/01/02/15")) // 2006-01-02 15:04:05
+		prefix = fmt.Sprint(time.Now().In(l.option.timeZone).Format("2006/01/02/15")) // 2006-01-02 15:04:05
 	case FileSplitTimeB:
 		// （年/月/日）
-		prefix = fmt.Sprint(time.Now().Local().Format("2006/01/02")) // 2006-01-02 15:04:05
+		prefix = fmt.Sprint(time.Now().In(l.option.timeZone).Format("2006/01/02")) // 2006-01-02 15:04:05
 	case FileSplitTimeC:
 		// （年/月-日）
-		prefix = fmt.Sprint(time.Now().Local().Format("2006/01-02")) // 2006-01-02 15:04:05
+		prefix = fmt.Sprint(time.Now().In(l.option.timeZone).Format("2006/01-02")) // 2006-01-02 15:04:05
 	case FileSplitTimeD:
 		// （年-月-日-时）
-		prefix = fmt.Sprint(time.Now().Local().Format("2006-01-02-15")) // 2006-01-02 15:04:05
+		prefix = fmt.Sprint(time.Now().In(l.option.timeZone).Format("2006-01-02-15")) // 2006-01-02 15:04:05
 	case FileSplitTimeE:
 		// （年-月-日）
-		prefix = fmt.Sprint(time.Now().Local().Format("2006-01-02")) // 2006-01-02 15:04:05
+		prefix = fmt.Sprint(time.Now().In(l.option.timeZone).Format("2006-01-02")) // 2006-01-02 15:04:05
 	}
 
 	if prefix != "" {
