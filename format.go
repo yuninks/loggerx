@@ -24,7 +24,7 @@ func (l *Logger) logger(ctx context.Context, event string, v ...any) {
 	funcName = filepath.Ext(funcName)
 	funcName = strings.TrimPrefix(funcName, ".")
 
-	by, _ := json.Marshal(v)
+	// by, _ := json.Marshal(v)
 
 	nowTime := time.Now().In(l.option.timeZone).Format("2006-01-02 15:04:05.000000")
 
@@ -37,7 +37,7 @@ func (l *Logger) logger(ctx context.Context, event string, v ...any) {
 		File:    file + ":" + fmt.Sprintf("%d", line),
 		Func:    funcName,
 		Gid:     getGID(),
-		Content: string(by),
+		Content: v,
 		TraceId: traceId,
 	}
 
@@ -60,11 +60,11 @@ func (l *Logger) logger(ctx context.Context, event string, v ...any) {
 }
 
 type FormatData struct {
-	Time    string `json:"time,omitempty"`
-	File    string `json:"file,omitempty"`
-	Func    string `json:"func,omitempty"`
-	Gid     string `json:"gid,omitempty"`
-	Content string `json:"content,omitempty"`
-	TraceId string `json:"traceId,omitempty"`
-	Stack   string `json:"stack,omitempty"`
+	Time    string      `json:"time,omitempty"`
+	File    string      `json:"file,omitempty"`
+	Func    string      `json:"func,omitempty"`
+	Gid     string      `json:"gid,omitempty"`
+	Content interface{} `json:"content,omitempty"`
+	TraceId string      `json:"traceId,omitempty"`
+	Stack   string      `json:"stack,omitempty"`
 }
