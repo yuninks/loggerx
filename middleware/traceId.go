@@ -5,10 +5,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
+	"github.com/yuninks/loggerx"
 )
 
 // 设置普通的traceId
-func SetTraceId(ctx context.Context, traceKey string) context.Context {
+func SetTraceIdByKey(ctx context.Context, traceKey string) context.Context {
 	if traceKey == "" {
 		traceKey = "trace_id"
 	}
@@ -20,8 +21,13 @@ func SetTraceId(ctx context.Context, traceKey string) context.Context {
 	return ctx
 }
 
+// 设置logger的traceId
+func SetTraceId(ctx context.Context, logger *loggerx.Logger) context.Context {
+	return SetTraceIdByKey(ctx, logger.GetTraceField())
+}
+
 // 设置Gin的traceId
-func SetGinTraceId(traceKey string) gin.HandlerFunc {
+func SetGinTraceIdByKey(traceKey string) gin.HandlerFunc {
 
 	if traceKey == "" {
 		traceKey = "trace_id"
@@ -34,4 +40,9 @@ func SetGinTraceId(traceKey string) gin.HandlerFunc {
 		}
 		ctx.Set(traceKey, traceId)
 	}
+}
+
+// 设置Gin的traceId
+func SetGinTraceIdByLogger(logger *loggerx.Logger) gin.HandlerFunc {
+	return SetGinTraceIdByKey(logger.GetTraceField())
 }

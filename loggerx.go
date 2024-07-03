@@ -87,6 +87,11 @@ func (l *Logger) Channel(ch string) (r *Logger) {
 	return &rr
 }
 
+// 获取TraceField的字段
+func (l *Logger) GetTraceField() string {
+	return l.option.traceField
+}
+
 // 实现io.Writer接口
 func (l *Logger) Write(b []byte) (n int, err error) {
 	return l.write("info", b)
