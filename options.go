@@ -12,6 +12,7 @@ type loggerOption struct {
 	dir         string // 文件目录
 	isGinLog    bool
 	isGid       bool
+	isPrintFile bool
 	traceField  string         // trace字段
 	errorToInfo bool           // 错误日志是否写入info日志
 	days        int            // 日志保存天数
@@ -23,14 +24,15 @@ type loggerOption struct {
 
 func defaultOptions() loggerOption {
 	return loggerOption{
-		isGinLog:   true,
-		isGid:      true,
-		format:     "json",
-		dir:        "./log",
-		traceField: "trace_id",
-		days:       7,
-		fileSplit:  FileSplitTimeE,
-		timeZone:   time.Local,
+		isGinLog:    true,
+		isGid:       true,
+		isPrintFile: true,
+		format:      "json",
+		dir:         "./log",
+		traceField:  "trace_id",
+		days:        7,
+		fileSplit:   FileSplitTimeE,
+		timeZone:    time.Local,
 	}
 }
 
@@ -68,6 +70,13 @@ func SetPrefix(prefix string) Option {
 func SetFormat(format string) Option {
 	return func(o *loggerOption) {
 		o.format = format
+	}
+}
+
+// 设置是否打印到文件
+func SetPrintFile(print bool) Option {
+	return func(o *loggerOption) {
+		o.isPrintFile = print
 	}
 }
 
