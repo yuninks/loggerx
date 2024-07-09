@@ -18,26 +18,31 @@ import (
 func SetGinParams(log *loggerx.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
-		// 使用bytes.Buffer来读取并记录请求体，同时避免改变ctx.Request.Body
-		buf := &bytes.Buffer{}
-		tea := io.TeeReader(ctx.Request.Body, buf)
+		reqBody := "非json不保存Body"
 
-		// 读取body
-		body, err := io.ReadAll(tea)
-		if err != nil {
-			log.Infof(ctx, "Error reading request body: %v", err)
-			ctx.AbortWithStatus(http.StatusInternalServerError)
-			return
+		// 请求参数
+		reqContentType := ctx.Request.Header.Get("Content-Type")
+		if strings.Contains(reqContentType, "application/json") {
+
+			// 使用bytes.Buffer来读取并记录请求体，同时避免改变ctx.Request.Body
+			buf := &bytes.Buffer{}
+			tea := io.TeeReader(ctx.Request.Body, buf)
+
+			// 读取body
+			body, err := io.ReadAll(tea)
+			if err != nil {
+				log.Infof(ctx, "Error reading request body: %v", err)
+				ctx.AbortWithStatus(http.StatusInternalServerError)
+				return
+			}
+
+			// 截取body的前1000个字符
+			reqBody = getLimitBody(body)
+
+			// 使用NopCloser包裹buffer，仅为了确保在读取body之后body可以被关闭，但并不改变原始的Request.Body
+			ctx.Request.Body = io.NopCloser(buf)
+
 		}
-
-		// 截取body的前1000个字符
-		bodyStr := string(body)
-		if len(bodyStr) > 1000 {
-			bodyStr = bodyStr[:1000]
-		}
-
-		// 使用NopCloser包裹buffer，仅为了确保在读取body之后body可以被关闭，但并不改变原始的Request.Body
-		ctx.Request.Body = io.NopCloser(buf)
 
 		// 下面是响应参数缓存
 		blw := &bodyParamsWriter{
@@ -56,7 +61,7 @@ func SetGinParams(log *loggerx.Logger) gin.HandlerFunc {
 			Method:   ctx.Request.Method,
 			Path:     ctx.FullPath(),
 			ClientIP: ctx.ClientIP(),
-			Body:     bodyStr,
+			Body:     reqBody,
 			Header:   ctx.Request.Header,
 		}
 
@@ -71,7 +76,7 @@ func SetGinParams(log *loggerx.Logger) gin.HandlerFunc {
 			return
 		}
 
-		respData := blw.body.String()
+		respData := getLimitBody(blw.body.Bytes())
 
 		resp := struct {
 			HttpCode int    `json:"http_code"`
@@ -96,4 +101,11 @@ func (w bodyParamsWriter) Write(b []byte) (int, error) {
 	// b = []byte(`{"code":0}`)
 	w.body.Write(b)
 	return w.ResponseWriter.Write(b)
+}
+
+func getLimitBody(body []byte) string {
+	if len(body) > 1000 {
+		return string(body[:1000])
+	}
+	return string(body)
 }
