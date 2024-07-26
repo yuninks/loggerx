@@ -3,6 +3,7 @@ package loggerx_test
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"testing"
 	"time"
@@ -37,6 +38,14 @@ func TestLogger(t *testing.T) {
 
 	time.Sleep(time.Second * 5)
 }
+
+func TestLogger2(t *testing.T) {
+	
+	err := errors.New("test error")
+	loggerx.Info(context.Background(), err)
+
+}
+
 
 type Print struct {
 }

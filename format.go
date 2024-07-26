@@ -32,6 +32,12 @@ func (l *Logger) logger(ctx context.Context, event string, v ...any) {
 
 	// writeStr := "[" + event + "]" + nowTime + " " + file + ":" + fmt.Sprintf("%d", line) + " " + funcName + " gid:" + getGID() + " " + traceId + " @data@: " + string(by) + "\n\n"
 
+	for idx,val := range v {
+		if _, ok := val.(error); ok {
+			v[idx] = fmt.Sprintf("%+v", val)
+		}
+	}
+
 	fd := FormatData{
 		Time:    nowTime,
 		File:    file + ":" + fmt.Sprintf("%d", line),
