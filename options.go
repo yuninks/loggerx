@@ -13,6 +13,7 @@ type loggerOption struct {
 	isGinLog    bool
 	isGid       bool
 	isPrintFile bool
+	writeType   writeType      // 是否异步罗盘
 	traceField  string         // trace字段
 	errorToInfo bool           // 错误日志是否写入info日志
 	days        int            // 日志保存天数
@@ -22,11 +23,21 @@ type loggerOption struct {
 	timeZone    *time.Location // 时区
 }
 
+type writeType uint8
+
+const (
+	// 0.默认(同步) 1.指定同步 2.指定异步
+	writeTypeDefault writeType = iota
+	writeTypeSync
+	writeTypeAsync
+)
+
 func defaultOptions() loggerOption {
 	return loggerOption{
 		isGinLog:    true,
 		isGid:       true,
 		isPrintFile: true,
+		writeType:   writeTypeDefault, // 默认同步
 		format:      "json",
 		dir:         "./log",
 		traceField:  "trace_id",
@@ -42,6 +53,13 @@ type Option func(*loggerOption)
 func SetTraceField(traceField string) Option {
 	return func(o *loggerOption) {
 		o.traceField = traceField
+	}
+}
+
+// 是否异步写入
+func SetWriteAsync() Option {
+	return func(o *loggerOption) {
+		o.writeType = writeTypeAsync
 	}
 }
 
