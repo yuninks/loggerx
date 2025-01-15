@@ -21,6 +21,7 @@ type loggerOption struct {
 	fileSplit   FileSplit      // 文件切割规则
 	sizeSplit   int            // 根据文件大小切割
 	timeZone    *time.Location // 时区
+	escapeHTML  bool
 }
 
 type writeType uint8
@@ -44,6 +45,7 @@ func defaultOptions() loggerOption {
 		days:        7,
 		fileSplit:   FileSplitTimeE,
 		timeZone:    time.Local,
+		escapeHTML:  true,
 	}
 }
 
@@ -174,5 +176,11 @@ const (
 func SetSizeSplit(m int) Option {
 	return func(o *loggerOption) {
 		o.sizeSplit = m
+	}
+}
+
+func SetEscapeHTML(b bool) Option {
+	return func(o *loggerOption) {
+		o.escapeHTML = b
 	}
 }

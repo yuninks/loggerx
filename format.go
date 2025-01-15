@@ -1,6 +1,7 @@
 package loggerx
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -32,7 +33,7 @@ func (l *Logger) logger(ctx context.Context, event string, v ...any) {
 
 	// writeStr := "[" + event + "]" + nowTime + " " + file + ":" + fmt.Sprintf("%d", line) + " " + funcName + " gid:" + getGID() + " " + traceId + " @data@: " + string(by) + "\n\n"
 
-	for idx,val := range v {
+	for idx, val := range v {
 		if _, ok := val.(error); ok {
 			v[idx] = fmt.Sprintf("%+v", val)
 		}
@@ -51,7 +52,18 @@ func (l *Logger) logger(ctx context.Context, event string, v ...any) {
 		// fd.Stack = string(debug.Stack())
 	}
 
-	fdb, _ := json.Marshal(fd)
+	var fdb []byte
+	if l.option.escapeHTML {
+		fdb, _ = json.Marshal(fd)
+	} else {
+		// 非转义
+		var buf bytes.Buffer
+		encoder := json.NewEncoder(&buf)
+		encoder.SetEscapeHTML(false)
+		encoder.Encode(fd)
+		fdb = buf.Bytes()
+	}
+	fdb = bytes.TrimRight(fdb, "\n")
 
 	ff := []byte("\n[" + event + "]")
 	fdb = append(ff, fdb...)
