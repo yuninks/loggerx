@@ -21,11 +21,12 @@ import (
 
 // 需要实现io.Writer接口
 type Logger struct {
-	ctx      context.Context
-	filePath *sync.Map // filePath
-	mu       *sync.Mutex
-	option   loggerOption
-	channel  string
+	ctx       context.Context
+	filePath  *sync.Map // filePath
+	mu        *sync.Mutex
+	option    loggerOption
+	channel   string
+	writeType writeType // 是否异步落盘，这里作用范围是本条，优先判断这里
 }
 
 type filePath struct {
@@ -45,10 +46,11 @@ func NewLogger(ctx context.Context, opts ...Option) *Logger {
 	}
 
 	l := &Logger{
-		ctx:      ctx,
-		filePath: &sync.Map{},
-		mu:       &sync.Mutex{},
-		option:   opt,
+		ctx:       ctx,
+		filePath:  &sync.Map{},
+		mu:        &sync.Mutex{},
+		option:    opt,
+		writeType: writeTypeDefault,
 	}
 
 	log.SetOutput(l)
@@ -84,6 +86,18 @@ func (l *Logger) MustSync() {
 func (l *Logger) Channel(ch string) (r *Logger) {
 	rr := *l
 	rr.channel = ch
+	return &rr
+}
+
+func (l *Logger) WriteAsync() (r *Logger) {
+	rr := *l
+	rr.writeType = writeTypeAsync
+	return &rr
+}
+
+func (l *Logger) WriteSync() (r *Logger) {
+	rr := *l
+	rr.writeType = writeTypeSync
 	return &rr
 }
 

@@ -13,6 +13,7 @@ type loggerOption struct {
 	isGinLog    bool
 	isGid       bool
 	isPrintFile bool
+	writeType   writeType      // 是否异步罗盘
 	traceField  string         // trace字段
 	errorToInfo bool           // 错误日志是否写入info日志
 	days        int            // 日志保存天数
@@ -20,19 +21,31 @@ type loggerOption struct {
 	fileSplit   FileSplit      // 文件切割规则
 	sizeSplit   int            // 根据文件大小切割
 	timeZone    *time.Location // 时区
+	escapeHTML  bool
 }
+
+type writeType uint8
+
+const (
+	// 0.默认(同步) 1.指定同步 2.指定异步
+	writeTypeDefault writeType = iota
+	writeTypeSync
+	writeTypeAsync
+)
 
 func defaultOptions() loggerOption {
 	return loggerOption{
 		isGinLog:    true,
 		isGid:       true,
 		isPrintFile: true,
+		writeType:   writeTypeDefault, // 默认同步
 		format:      "json",
 		dir:         "./log",
 		traceField:  "trace_id",
 		days:        7,
 		fileSplit:   FileSplitTimeE,
 		timeZone:    time.Local,
+		escapeHTML:  true,
 	}
 }
 
@@ -42,6 +55,13 @@ type Option func(*loggerOption)
 func SetTraceField(traceField string) Option {
 	return func(o *loggerOption) {
 		o.traceField = traceField
+	}
+}
+
+// 是否异步写入
+func SetWriteAsync() Option {
+	return func(o *loggerOption) {
+		o.writeType = writeTypeAsync
 	}
 }
 
@@ -156,5 +176,11 @@ const (
 func SetSizeSplit(m int) Option {
 	return func(o *loggerOption) {
 		o.sizeSplit = m
+	}
+}
+
+func SetEscapeHTML(b bool) Option {
+	return func(o *loggerOption) {
+		o.escapeHTML = b
 	}
 }
