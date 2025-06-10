@@ -22,6 +22,7 @@ type loggerOption struct {
 	sizeSplit   int            // 根据文件大小切割
 	timeZone    *time.Location // 时区
 	escapeHTML  bool
+	expandData  map[string]string // 扩展字段
 }
 
 type writeType uint8
@@ -46,6 +47,7 @@ func defaultOptions() loggerOption {
 		fileSplit:   FileSplitTimeE,
 		timeZone:    time.Local,
 		escapeHTML:  true,
+		expandData:  make(map[string]string),
 	}
 }
 
@@ -55,6 +57,16 @@ type Option func(*loggerOption)
 func SetTraceField(traceField string) Option {
 	return func(o *loggerOption) {
 		o.traceField = traceField
+	}
+}
+
+// 附加字段
+func SetExpandData(key string, value string) Option {
+	return func(o *loggerOption) {
+		if o.expandData == nil {
+			o.expandData = make(map[string]string)
+		}
+		o.expandData[key] = value
 	}
 }
 

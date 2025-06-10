@@ -46,6 +46,7 @@ func (l *Logger) logger(ctx context.Context, event string, v ...any) {
 		Gid:     getGID(),
 		Content: v,
 		TraceId: traceId,
+		Expand: l.option.expandData,
 	}
 
 	if event == "error" {
@@ -85,4 +86,5 @@ type FormatData struct {
 	Content interface{} `json:"content,omitempty"`
 	TraceId string      `json:"traceId,omitempty"`
 	Stack   string      `json:"stack,omitempty"`
+	Expand map[string]string `json:"expand,omitempty"`
 }
